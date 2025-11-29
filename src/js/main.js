@@ -39,12 +39,16 @@ class ChessGame {
     setupEventListeners() {
         this.boardElement.addEventListener('click', (e) => {
             const square = e.target.closest('.square');
-            if (!square) return;
+            if (!square) {
+                return;
+            }
 
-            const row = parseInt(square.dataset.row);
-            const col = parseInt(square.dataset.col);
+            const row = parseInt(square.dataset.row, 10);
+            const col = parseInt(square.dataset.col, 10);
 
-            if (isNaN(row) || isNaN(col)) return;
+            if (isNaN(row) || isNaN(col)) {
+                return;
+            }
 
             // Handle the click
             this.controller.handleSquareClick(row, col).then((moveExecuted) => {
@@ -109,7 +113,9 @@ class ChessGame {
         const forwardBtn = document.getElementById('history-forward');
         const currentBtn = document.getElementById('history-current');
 
-        if (!historyList) return;
+        if (!historyList) {
+            return;
+        }
 
         // Update button states
         if (backBtn) {
@@ -132,49 +138,62 @@ class ChessGame {
         }
 
         history.forEach((entry, index) => {
-            const notation = HistoryManager.getMoveNotation(entry.move);
-            const isCurrent = index === this.controller.historyManager.getCurrentIndex();
-            const moveColor = entry.move.color;
-            const isWhite = moveColor === 'white';
-            
-            // Create container for badge and color indicator
-            const container = document.createElement('div');
-            container.className = 'flex items-center gap-1';
-            
-            // Color badge indicator
-            const colorBadge = document.createElement('span');
-            colorBadge.className = `w-3 h-3 rounded-full ${
-                isWhite ? 'bg-white border border-gray-300' : 'bg-gray-800'
-            }`;
-            colorBadge.title = isWhite ? 'White' : 'Black';
-            
-            // Move badge
-            const badge = document.createElement('span');
-            badge.className = `px-2 py-1 rounded text-xs cursor-pointer transition-colors ${
-                isCurrent 
-                    ? 'bg-blue-500 text-white font-semibold' 
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`;
-            badge.textContent = `${index + 1}. ${notation}`;
-            badge.dataset.moveIndex = index;
-            
-            // Add click handler with confirmation
-            badge.addEventListener('click', () => {
-                if (isCurrent) return; // Already at this move
-                
-                const confirmed = confirm(`Jump to move ${index + 1}?`);
-                if (confirmed) {
-                    this.controller.goToMove(index);
-                    this.board.render(this.boardElement);
-                    this.controller.updateUI();
-                    this.updateHistoryUI();
-                }
-            });
-            
-            container.appendChild(colorBadge);
-            container.appendChild(badge);
-            historyList.appendChild(container);
+            this.createHistoryBadge(historyList, entry, index);
         });
+    }
+
+    /**
+     * Create a history badge for a single move entry
+     * @param {HTMLElement} historyList - Container element
+     * @param {Object} entry - History entry
+     * @param {number} index - Move index
+     */
+    createHistoryBadge(historyList, entry, index) {
+        const notation = HistoryManager.getMoveNotation(entry.move);
+        const isCurrent = index === this.controller.historyManager.getCurrentIndex();
+        const moveColor = entry.move.color;
+        const isWhite = moveColor === 'white';
+
+        // Create container for badge and color indicator
+        const container = document.createElement('div');
+        container.className = 'flex items-center gap-1';
+
+        // Color badge indicator
+        const colorBadge = document.createElement('span');
+        colorBadge.className = `w-3 h-3 rounded-full ${
+            isWhite ? 'bg-white border border-gray-300' : 'bg-gray-800'
+        }`;
+        colorBadge.title = isWhite ? 'White' : 'Black';
+
+        // Move badge
+        const badge = document.createElement('span');
+        badge.className = `px-2 py-1 rounded text-xs cursor-pointer transition-colors ${
+            isCurrent
+                ? 'bg-blue-500 text-white font-semibold'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        }`;
+        badge.textContent = `${index + 1}. ${notation}`;
+        badge.dataset.moveIndex = index;
+
+        // Add click handler with confirmation
+        badge.addEventListener('click', () => {
+            if (isCurrent) {
+                return; // Already at this move
+            }
+
+            // eslint-disable-next-line no-alert
+            const confirmed = window.confirm(`Jump to move ${index + 1}?`);
+            if (confirmed) {
+                this.controller.goToMove(index);
+                this.board.render(this.boardElement);
+                this.controller.updateUI();
+                this.updateHistoryUI();
+            }
+        });
+
+        container.appendChild(colorBadge);
+        container.appendChild(badge);
+        historyList.appendChild(container);
     }
 }
 
