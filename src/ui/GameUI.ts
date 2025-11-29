@@ -63,10 +63,10 @@ export class GameUI {
         }
 
         this._startupPage.innerHTML = this.createStartupHTML();
-        this._startupPage.style.display = 'flex';
+        this._startupPage.classList.remove('hidden');
 
         if (this._gameContainer) {
-            this._gameContainer.style.display = 'none';
+            this._gameContainer.classList.add('hidden');
         }
 
         this.setupStartupListeners();
@@ -80,47 +80,47 @@ export class GameUI {
         return `
       <div class="startup-content">
         <div class="text-center mb-8">
-          <h1 class="text-4xl font-bold text-gray-800 mb-2">♔ Chess Game ♚</h1>
-          <p class="text-gray-600">Choose your game mode and settings</p>
+          <h1 class="text-4xl font-bold text-white mb-2">♔ Chess Game ♚</h1>
+          <p class="text-white/70">Choose your game mode and settings</p>
         </div>
         
         <div class="mb-6">
-          <h2 class="text-lg font-semibold mb-3 text-gray-700">Game Mode</h2>
+          <h2 class="text-lg font-semibold mb-3 text-white/90">Game Mode</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button class="game-mode-btn" data-mode="pvp">
               <div class="text-4xl mb-2">👥</div>
-              <div class="font-semibold text-lg">Player vs Player</div>
-              <div class="text-sm text-gray-500 mt-1">Play with a friend</div>
+              <div class="font-semibold text-lg text-white">Player vs Player</div>
+              <div class="text-sm text-white/60 mt-1">Play with a friend</div>
             </button>
             <button class="game-mode-btn" data-mode="ai">
               <div class="text-4xl mb-2">🤖</div>
-              <div class="font-semibold text-lg">Player vs AI</div>
-              <div class="text-sm text-gray-500 mt-1">Challenge the computer</div>
+              <div class="font-semibold text-lg text-white">Player vs AI</div>
+              <div class="text-sm text-white/60 mt-1">Challenge the computer</div>
             </button>
           </div>
         </div>
 
         <div id="player-names-section" class="mb-6 hidden">
-          <h2 class="text-lg font-semibold mb-3 text-gray-700">Player Names</h2>
+          <h2 class="text-lg font-semibold mb-3 text-white/90">Player Names</h2>
           <div class="space-y-3">
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">White Player ♔</label>
+              <label class="block text-sm font-medium text-white/80 mb-1">White Player ♔</label>
               <input type="text" id="white-player-name" 
-                class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors" 
+                class="w-full px-4 py-2 bg-white/10 border-2 border-white/20 rounded-lg text-white placeholder:text-white/40 focus:border-purple-400 focus:outline-none transition-colors" 
                 placeholder="Enter name" maxlength="20">
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">Black Player ♚</label>
+              <label class="block text-sm font-medium text-white/80 mb-1">Black Player ♚</label>
               <input type="text" id="black-player-name" 
-                class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors" 
+                class="w-full px-4 py-2 bg-white/10 border-2 border-white/20 rounded-lg text-white placeholder:text-white/40 focus:border-purple-400 focus:outline-none transition-colors" 
                 placeholder="Enter name" maxlength="20">
             </div>
           </div>
         </div>
 
         <div id="ai-section" class="mb-6 hidden">
-          <h2 class="text-lg font-semibold mb-3 text-gray-700">AI Difficulty</h2>
-          <select id="ai-difficulty" class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors">
+          <h2 class="text-lg font-semibold mb-3 text-white/90">AI Difficulty</h2>
+          <select id="ai-difficulty" class="w-full px-4 py-2 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:border-purple-400 focus:outline-none transition-colors">
             <option value="easy">🟢 Easy - Great for beginners</option>
             <option value="medium" selected>🟡 Medium - Balanced challenge</option>
             <option value="hard">🔴 Hard - For experienced players</option>
@@ -128,8 +128,8 @@ export class GameUI {
         </div>
 
         <div class="mb-8">
-          <h2 class="text-lg font-semibold mb-3 text-gray-700">Board Theme</h2>
-          <select id="theme-select" class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors">
+          <h2 class="text-lg font-semibold mb-3 text-white/90">Board Theme</h2>
+          <select id="theme-select" class="w-full px-4 py-2 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:border-purple-400 focus:outline-none transition-colors">
             ${themeOptions}
           </select>
         </div>
@@ -256,10 +256,9 @@ export class GameUI {
 
         // Hide startup, show game
         if (this._startupPage) {
-            this._startupPage.style.display = 'none';
+            this._startupPage.classList.add('hidden');
         }
         if (this._gameContainer) {
-            this._gameContainer.style.display = 'flex';
             this._gameContainer.classList.remove('hidden');
         }
 
@@ -431,8 +430,8 @@ export class GameUI {
         modal.className = 'promotion-modal';
         modal.innerHTML = `
       <div class="promotion-content">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Promote Pawn</h2>
-        <p class="text-gray-600 mb-6">Choose a piece:</p>
+        <h2 class="text-2xl font-bold mb-4 text-white">Promote Pawn</h2>
+        <p class="text-white/80 mb-6">Choose a piece:</p>
         <div class="promotion-pieces">
           ${this.createPromotionOptions(pieceData.color)}
         </div>
@@ -545,9 +544,8 @@ export class GameUI {
                 : this._playerNames.black;
 
         el.textContent = playerName;
-        el.className = `text-2xl font-bold ${
-            this._game.currentPlayer === PieceColor.WHITE ? 'text-gray-800' : 'text-gray-600'
-        }`;
+        el.className = `text-2xl font-bold ${this._game.currentPlayer === PieceColor.WHITE ? 'text-white' : 'text-white/90'
+            }`;
     }
 
     private updateGameStatus(): void {
@@ -557,22 +555,22 @@ export class GameUI {
         }
 
         const statusConfig: Record<GameStatus, { text: string; class: string }> = {
-            [GameStatus.NOT_STARTED]: { text: 'Not Started', class: 'text-gray-600' },
-            [GameStatus.IN_PROGRESS]: { text: 'In Progress', class: 'text-gray-800' },
+            [GameStatus.NOT_STARTED]: { text: 'Not Started', class: 'text-white/70' },
+            [GameStatus.IN_PROGRESS]: { text: 'In Progress', class: 'text-white' },
             [GameStatus.CHECK]: {
                 text: `Check - ${this.getCurrentPlayerName()}`,
-                class: 'text-yellow-600 font-semibold'
+                class: 'text-yellow-400 font-semibold'
             },
             [GameStatus.CHECKMATE]: {
                 text: `Checkmate - ${this.getWinnerName()} wins!`,
-                class: 'text-red-600 font-bold'
+                class: 'text-red-400 font-bold'
             },
             [GameStatus.STALEMATE]: {
                 text: 'Stalemate - Draw!',
-                class: 'text-blue-600 font-semibold'
+                class: 'text-blue-400 font-semibold'
             },
-            [GameStatus.DRAW]: { text: 'Draw', class: 'text-blue-600' },
-            [GameStatus.RESIGNED]: { text: 'Resigned', class: 'text-gray-600' }
+            [GameStatus.DRAW]: { text: 'Draw', class: 'text-blue-400' },
+            [GameStatus.RESIGNED]: { text: 'Resigned', class: 'text-white/70' }
         };
 
         const config = statusConfig[this._game.status];
@@ -647,14 +645,14 @@ export class GameUI {
         <h2 class="text-3xl font-bold mb-2 victory-text">
           ${isCheckmate ? '🎉 Checkmate!' : '🤝 Stalemate'}
         </h2>
-        <p class="text-xl text-gray-700 mb-6">
+        <p class="text-xl text-white/90 mb-6">
           ${isCheckmate ? `${winnerName} wins!` : "It's a draw!"}
         </p>
         <div class="flex gap-4 justify-center">
-          <button id="new-game-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+          <button id="new-game-btn" class="px-6 py-3 bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-500 hover:to-blue-500 transition-all font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
             New Game
           </button>
-          <button id="close-modal-btn" class="px-6 py-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors font-semibold">
+          <button id="close-modal-btn" class="px-6 py-3 bg-white/10 text-white border border-white/20 rounded-lg hover:bg-white/20 transition-all font-semibold backdrop-blur-sm">
             Close
           </button>
         </div>
