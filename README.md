@@ -42,6 +42,9 @@ A full-featured chess game built with vanilla JavaScript, Tailwind CSS v4, and V
 - **Tailwind CSS v4** - Utility-first CSS framework with CSS-first configuration
 - **Vanilla JavaScript (ES6+)** - No frameworks, pure JavaScript
 - **ES6 Modules** - Modern module system
+- **ESLint** - Code linting and quality
+- **Prettier** - Code formatting
+- **GitHub Actions** - CI/CD pipeline
 
 ## Project Structure
 
@@ -77,7 +80,7 @@ chess/
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone git@github.com:mohamedhabibwork/web-chess-js.git  chess
 cd chess
 ```
 
@@ -120,6 +123,38 @@ npm run preview
 3. **View Capture Moves**: Squares with opponent pieces will be highlighted in red with a border
 4. **Make a Move**: Click on a highlighted square to move your piece
 5. **Navigate History**: Use the Back/Forward buttons or click any move in the history panel to navigate through the game
+
+## Code Quality
+
+This project follows strict clean code rules enforced by ESLint and Prettier. See [CLEAN_CODE.md](./CLEAN_CODE.md) for detailed guidelines.
+
+### Quick Checks
+
+Before committing, run:
+```bash
+npm run check
+```
+
+This will:
+- Lint all JavaScript files
+- Check code formatting
+- Ensure code quality standards
+
+### Auto-fix Issues
+
+```bash
+npm run lint:fix    # Fix linting issues
+npm run format      # Format code
+```
+
+## CI/CD
+
+GitHub Actions automatically runs on every push and pull request:
+- ✅ Linting checks (ESLint)
+- ✅ Formatting checks (Prettier)
+- ✅ Build verification
+
+See `.github/workflows/ci.yml` for the CI configuration.
 
 ## Customization
 
@@ -172,9 +207,17 @@ The `HistoryManager` class provides:
 
 ## Scripts
 
+### Development
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
+
+### Code Quality
+- `npm run lint` - Run ESLint to check code quality
+- `npm run lint:fix` - Auto-fix ESLint issues
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
+- `npm run check` - Run all code quality checks
 
 ## Browser Support
 
