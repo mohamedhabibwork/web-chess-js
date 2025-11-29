@@ -60,8 +60,8 @@ class ChessGame {
                         this.controller.updateUI();
                         this.updateHistoryUI();
                     }
-                    // If no move was executed (just piece selection), highlights are already applied
-                    // and board doesn't need re-rendering
+                    // If no move was executed (just piece selection),
+                    // highlights are already applied and board doesn't need re-rendering
                 })
                 .catch((err) => {
                     console.error('Error handling square click:', err);
