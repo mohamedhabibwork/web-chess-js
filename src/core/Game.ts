@@ -6,6 +6,7 @@
 import { Board } from './Board.js';
 import { Piece } from './Piece.js';
 import { Pawn, Rook, Knight, Bishop, Queen, King } from '../pieces/index.js';
+import { GameHistory, NotationConverter } from './GameHistory.js';
 import {
     type IPosition,
     type IMove,
@@ -36,6 +37,7 @@ export class Game {
     private _settings: IGameSettings | null;
     private _selectedPiece: Piece | null;
     private _pendingPromotion: { position: IPosition; color: PieceColor } | null;
+    private _history: GameHistory;
 
     constructor() {
         this._board = Board.createStandard();
@@ -46,6 +48,10 @@ export class Game {
         this._settings = null;
         this._selectedPiece = null;
         this._pendingPromotion = null;
+        this._history = new GameHistory();
+
+        // Save initial state
+        this._history.addSnapshot(null, this.getState(), 'Start');
     }
 
     // ============================================================================
@@ -87,6 +93,10 @@ export class Game {
         return this._settings;
     }
 
+    public get history(): GameHistory {
+        return this._history;
+    }
+
     // ============================================================================
     // GAME SETUP
     // ============================================================================
@@ -104,6 +114,9 @@ export class Game {
         this._capturedPieces = { white: [], black: [] };
         this._selectedPiece = null;
         this._pendingPromotion = null;
+
+        this._history.clear();
+        this._history.addSnapshot(null, this.getState(), 'Start');
     }
 
     // ============================================================================
@@ -222,6 +235,19 @@ export class Game {
         this.switchPlayer();
         this.updateGameStatus();
 
+        // Save to history
+        const pieceData = this._board.getPieceData(to);
+        const notation = pieceData
+            ? NotationConverter.moveToNotation(
+                move,
+                pieceData.type,
+                !!capturedPiece,
+                this._status === GameStatus.CHECK,
+                this._status === GameStatus.CHECKMATE
+            )
+            : '';
+        this._history.addSnapshot(move, this.getState(), notation);
+
         return { success: true, move };
     }
 
@@ -275,6 +301,16 @@ export class Game {
         // Switch player and update game status
         this.switchPlayer();
         this.updateGameStatus();
+
+        // Save to history
+        const notation = NotationConverter.moveToNotation(
+            move,
+            pieceType,
+            false,
+            this._status === GameStatus.CHECK,
+            this._status === GameStatus.CHECKMATE
+        );
+        this._history.addSnapshot(move, this.getState(), notation);
 
         return { success: true, move };
     }
@@ -571,5 +607,89 @@ export class Game {
             return this._currentPlayer === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
         }
         return null;
+    }
+
+    // ============================================================================
+    // HISTORY & ROLLBACK
+    // ============================================================================
+
+    /**
+     * Restore game state from a snapshot
+     */
+    private restoreStateFromSnapshot(state: IGameState): void {
+        this._currentPlayer = state.currentPlayer;
+        this._status = state.status;
+        this._moveHistory = [...state.moveHistory];
+        this._capturedPieces = {
+            white: [...state.capturedPieces.white],
+            black: [...state.capturedPieces.black]
+        };
+        this._selectedPiece = null;
+        this._pendingPromotion = null;
+
+        // Restore board state
+        this._board = Board.fromBoardState(state.board);
+    }
+
+    /**
+     * Go back to a specific point in history
+     */
+    public goToHistoryPoint(index: number): boolean {
+        const state = this._history.goToSnapshot(index);
+        if (state) {
+            this.restoreStateFromSnapshot(state);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Go back one move
+     */
+    public undoMove(): boolean {
+        const state = this._history.goBack();
+        if (state) {
+            this.restoreStateFromSnapshot(state);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Go forward one move (redo)
+     */
+    public redoMove(): boolean {
+        const state = this._history.goForward();
+        if (state) {
+            this.restoreStateFromSnapshot(state);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Go to the latest move
+     */
+    public goToLatest(): boolean {
+        if (!this._history.isAtLatest()) {
+            const state = this._history.goToLatest();
+            if (state) {
+                this.restoreStateFromSnapshot(state);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Go to the start of the game
+     */
+    public goToStart(): boolean {
+        const state = this._history.goToStart();
+        if (state) {
+            this.restoreStateFromSnapshot(state);
+            return true;
+        }
+        return false;
     }
 }

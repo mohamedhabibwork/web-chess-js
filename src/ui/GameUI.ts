@@ -28,18 +28,26 @@ export class GameUI {
     private _boardElement: HTMLElement | null = null;
     private _startupPage: HTMLElement | null = null;
     private _gameContainer: HTMLElement | null = null;
+    private _moveHistoryList: HTMLElement | null = null;
+    private _historyStartBtn: HTMLButtonElement | null = null;
+    private _historyBackBtn: HTMLButtonElement | null = null;
+    private _historyForwardBtn: HTMLButtonElement | null = null;
+    private _historyEndBtn: HTMLButtonElement | null = null;
 
     // UI State
     private _selectedSquare: IPosition | null = null;
     private _validMoves: MoveList = [];
     private _playerNames: { white: string; black: string } = { white: 'White', black: 'Black' };
     private _isAIEnabled = false;
+    private _suggestedMove: { from: IPosition; to: IPosition } | null = null;
 
     constructor() {
         this._game = new Game();
         this._ai = new ChessAI(AIDifficulty.MEDIUM, PieceColor.BLACK);
         this._themeManager = new ThemeManager();
     }
+
+
 
     // ============================================================================
     // INITIALIZATION
@@ -49,8 +57,59 @@ export class GameUI {
         this._startupPage = document.getElementById('startup-page');
         this._gameContainer = document.getElementById('game-container');
         this._boardElement = document.getElementById('chess-board');
+        this._moveHistoryList = document.getElementById('move-history-list');
+        this._historyStartBtn = document.getElementById('history-start-btn') as HTMLButtonElement;
+        this._historyBackBtn = document.getElementById('history-back-btn') as HTMLButtonElement;
+        this._historyForwardBtn = document.getElementById('history-forward-btn') as HTMLButtonElement;
+        this._historyEndBtn = document.getElementById('history-end-btn') as HTMLButtonElement;
 
+        this.setupHistoryListeners();
         this.showStartupPage();
+    }
+
+    private setupHistoryListeners(): void {
+        this._historyStartBtn?.addEventListener('click', () => {
+            if (this._game.goToStart()) {
+                this.onHistoryChange();
+            }
+        });
+
+        this._historyBackBtn?.addEventListener('click', () => {
+            if (this._game.undoMove()) {
+                this.onHistoryChange();
+            }
+        });
+
+        this._historyForwardBtn?.addEventListener('click', () => {
+            if (this._game.redoMove()) {
+                this.onHistoryChange();
+            }
+        });
+
+        this._historyEndBtn?.addEventListener('click', () => {
+            if (this._game.goToLatest()) {
+                this.onHistoryChange();
+            }
+        });
+
+        // Delegate click for history items
+        this._moveHistoryList?.addEventListener('click', (e) => {
+            const target = e.target as HTMLElement;
+            const item = target.closest('.history-item');
+            if (item) {
+                const index = parseInt(item.getAttribute('data-index') || '0', 10);
+                if (this._game.goToHistoryPoint(index)) {
+                    this.onHistoryChange();
+                }
+            }
+        });
+    }
+
+    private onHistoryChange(): void {
+        this.renderBoard();
+        this.updateUI();
+        this._selectedSquare = null;
+        this._validMoves = [];
     }
 
     // ============================================================================
@@ -333,6 +392,31 @@ export class GameUI {
             square.appendChild(pieceEl);
         }
 
+        // Add coordinates
+        if (col === 0) {
+            const rankLabel = document.createElement('span');
+            rankLabel.className = `coordinate-rank ${isLight ? 'text-primary' : 'text-secondary'}`;
+            rankLabel.textContent = String(8 - row);
+            square.appendChild(rankLabel);
+        }
+
+        if (row === 7) {
+            const fileLabel = document.createElement('span');
+            fileLabel.className = `coordinate-file ${isLight ? 'text-primary' : 'text-secondary'}`;
+            fileLabel.textContent = String.fromCharCode(97 + col); // 'a' + col
+            square.appendChild(fileLabel);
+        }
+
+        // Suggestion highlight
+        if (this._suggestedMove) {
+            const isSource = this._suggestedMove.from.row === row && this._suggestedMove.from.col === col;
+            const isTarget = this._suggestedMove.to.row === row && this._suggestedMove.to.col === col;
+
+            if (isSource || isTarget) {
+                square.classList.add('suggestion-highlight');
+            }
+        }
+
         return square;
     }
 
@@ -344,6 +428,26 @@ export class GameUI {
         this._boardElement?.addEventListener('click', (e) => {
             void this.handleBoardClick(e);
         });
+
+        // Hint button listener
+        const hintBtn = document.getElementById('hint-btn');
+        hintBtn?.addEventListener('click', () => {
+            this.handleHint();
+        });
+    }
+
+    private handleHint(): void {
+        // Create a temporary AI to find the best move for the current player
+        const hintAI = new ChessAI(AIDifficulty.HARD, this._game.currentPlayer);
+        const bestMove = hintAI.getBestMove(this._game);
+
+        if (bestMove) {
+            this._suggestedMove = {
+                from: bestMove.from,
+                to: bestMove.to
+            };
+            this.renderBoard();
+        }
     }
 
     private async handleBoardClick(e: Event): Promise<void> {
@@ -365,6 +469,38 @@ export class GameUI {
         if (this._selectedSquare && this._validMoves.some((m) => m.row === row && m.col === col)) {
             await this.handleMove(position);
             return;
+        }
+
+        // Special case: Castling by clicking on rook
+        if (this._selectedSquare) {
+            const selectedPiece = this._game.board.getPiece(this._selectedSquare);
+            const targetPiece = this._game.board.getPiece(position);
+
+            if (
+                selectedPiece?.type === PieceType.KING &&
+                targetPiece?.type === PieceType.ROOK &&
+                selectedPiece.color === targetPiece.color
+            ) {
+                // Determine target castling square based on rook position
+                let castlingTarget: IPosition | null = null;
+
+                // White King (7, 4)
+                if (selectedPiece.color === PieceColor.WHITE && this._selectedSquare.row === 7 && this._selectedSquare.col === 4) {
+                    if (position.row === 7 && position.col === 7) castlingTarget = { row: 7, col: 6 }; // Kingside (g1)
+                    if (position.row === 7 && position.col === 0) castlingTarget = { row: 7, col: 2 }; // Queenside (c1)
+                }
+
+                // Black King (0, 4)
+                if (selectedPiece.color === PieceColor.BLACK && this._selectedSquare.row === 0 && this._selectedSquare.col === 4) {
+                    if (position.row === 0 && position.col === 7) castlingTarget = { row: 0, col: 6 }; // Kingside (g8)
+                    if (position.row === 0 && position.col === 0) castlingTarget = { row: 0, col: 2 }; // Queenside (c8)
+                }
+
+                if (castlingTarget && this._validMoves.some(m => m.row === castlingTarget!.row && m.col === castlingTarget!.col)) {
+                    await this.handleMove(castlingTarget);
+                    return;
+                }
+            }
         }
 
         // Otherwise, try to select a piece
@@ -396,6 +532,7 @@ export class GameUI {
 
         this._selectedSquare = null;
         this._validMoves = [];
+        this._suggestedMove = null; // Clear suggestion
 
         if (result.needsPromotion && result.promotionPosition) {
             this.showPromotionModal(result.promotionPosition);
@@ -530,6 +667,43 @@ export class GameUI {
         this.updateCurrentPlayer();
         this.updateGameStatus();
         this.updateCapturedPieces();
+        this.updateHistoryUI();
+    }
+
+    private updateHistoryUI(): void {
+        if (!this._moveHistoryList) return;
+
+        const snapshots = this._game.history.getSnapshots();
+        const currentIndex = this._game.history.getCurrentIndex();
+
+        // Update list
+        this._moveHistoryList.innerHTML = snapshots
+            .map((snapshot, index) => {
+                if (index === 0) return ''; // Skip initial state
+
+                const isCurrent = index === currentIndex;
+                const isActive = index <= currentIndex;
+
+                return `
+                    <div class="history-item ${isActive ? 'active' : ''} ${isCurrent ? 'current' : ''}" data-index="${index}">
+                        <span class="history-move-number">${snapshot.moveNumber}.</span>
+                        <span class="history-move-notation">${snapshot.notation}</span>
+                    </div>
+                `;
+            })
+            .join('');
+
+        // Scroll to current item
+        const currentItem = this._moveHistoryList.querySelector('.history-item.current');
+        if (currentItem) {
+            currentItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+
+        // Update buttons
+        if (this._historyStartBtn) this._historyStartBtn.disabled = !this._game.history.canGoBack();
+        if (this._historyBackBtn) this._historyBackBtn.disabled = !this._game.history.canGoBack();
+        if (this._historyForwardBtn) this._historyForwardBtn.disabled = !this._game.history.canGoForward();
+        if (this._historyEndBtn) this._historyEndBtn.disabled = !this._game.history.canGoForward();
     }
 
     private updateCurrentPlayer(): void {

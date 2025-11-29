@@ -369,6 +369,16 @@ export class Board {
     }
 
     /**
+     * Create board from board state (for history restoration)
+     */
+    public static fromBoardState(boardState: import('../types/index.js').IBoardState): Board {
+        const board = Board.fromData(boardState.squares);
+        board._enPassantTarget = boardState.enPassantTarget ? { ...boardState.enPassantTarget } : null;
+        board._castlingRights = { ...boardState.castlingRights };
+        return board;
+    }
+
+    /**
      * Factory method to create a standard board
      */
     public static createStandard(): Board {
