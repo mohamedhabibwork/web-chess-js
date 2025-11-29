@@ -97,7 +97,7 @@ export class HistoryManager {
 
     /**
      * Go to specific move index
-     * @param {number} index 
+     * @param {number} index
      * @returns {Object|null} Move data and board state
      */
     goToMove(index) {
@@ -144,7 +144,7 @@ export class HistoryManager {
 
     /**
      * Get move notation for display
-     * @param {Object} moveData 
+     * @param {Object} moveData
      * @returns {string}
      */
     static getMoveNotation(moveData) {
@@ -169,7 +169,7 @@ export class HistoryManager {
 
     /**
      * Convert position to chess notation (e.g., {row: 0, col: 0} -> "a8")
-     * @param {Object} position 
+     * @param {Object} position
      * @returns {string}
      */
     static positionToSquare(position) {
@@ -186,4 +186,3 @@ export class HistoryManager {
         this.currentIndex = -1;
     }
 }
-

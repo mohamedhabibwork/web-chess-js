@@ -51,18 +51,21 @@ class ChessGame {
             }
 
             // Handle the click
-            this.controller.handleSquareClick(row, col).then((moveExecuted) => {
-                // Only re-render board if a move was actually executed
-                if (moveExecuted) {
-                    this.board.render(this.boardElement);
-                    this.controller.updateUI();
-                    this.updateHistoryUI();
-                }
-                // If no move was executed (just piece selection), highlights are already applied
-                // and board doesn't need re-rendering
-            }).catch(err => {
-                console.error('Error handling square click:', err);
-            });
+            this.controller
+                .handleSquareClick(row, col)
+                .then((moveExecuted) => {
+                    // Only re-render board if a move was actually executed
+                    if (moveExecuted) {
+                        this.board.render(this.boardElement);
+                        this.controller.updateUI();
+                        this.updateHistoryUI();
+                    }
+                    // If no move was executed (just piece selection), highlights are already applied
+                    // and board doesn't need re-rendering
+                })
+                .catch((err) => {
+                    console.error('Error handling square click:', err);
+                });
         });
     }
 
@@ -202,4 +205,3 @@ document.addEventListener('DOMContentLoaded', () => {
     const game = new ChessGame();
     game.init();
 });
-

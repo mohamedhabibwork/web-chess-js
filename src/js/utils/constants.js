@@ -40,4 +40,3 @@ export const GAME_STATUS = {
     CHECKMATE: 'Checkmate',
     STALEMATE: 'Stalemate'
 };
-

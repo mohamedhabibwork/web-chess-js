@@ -20,20 +20,20 @@ export class Queen extends Piece {
         const moves = [];
         // Queen moves like both Rook and Bishop
         const directions = [
-            { row: -1, col: 0 },   // Up
-            { row: 1, col: 0 },    // Down
-            { row: 0, col: -1 },   // Left
-            { row: 0, col: 1 },    // Right
-            { row: -1, col: -1 },  // Up-Left
-            { row: -1, col: 1 },   // Up-Right
-            { row: 1, col: -1 },   // Down-Left
-            { row: 1, col: 1 }     // Down-Right
+            { row: -1, col: 0 }, // Up
+            { row: 1, col: 0 }, // Down
+            { row: 0, col: -1 }, // Left
+            { row: 0, col: 1 }, // Right
+            { row: -1, col: -1 }, // Up-Left
+            { row: -1, col: 1 }, // Up-Right
+            { row: 1, col: -1 }, // Down-Left
+            { row: 1, col: 1 } // Down-Right
         ];
 
-        directions.forEach(dir => {
+        directions.forEach((dir) => {
             for (let i = 1; i < 8; i++) {
-                const newRow = this.row + (dir.row * i);
-                const newCol = this.col + (dir.col * i);
+                const newRow = this.row + dir.row * i;
+                const newCol = this.col + dir.col * i;
 
                 if (!this.isValidPosition(newRow, newCol)) break;
 
@@ -52,4 +52,3 @@ export class Queen extends Piece {
         return moves;
     }
 }
-

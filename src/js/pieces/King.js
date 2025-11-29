@@ -19,18 +19,18 @@ export class King extends Piece {
     getValidMoves(board, gameState) {
         const moves = [];
         const directions = [
-            { row: -1, col: 0 },   // Up
-            { row: 1, col: 0 },    // Down
-            { row: 0, col: -1 },   // Left
-            { row: 0, col: 1 },    // Right
-            { row: -1, col: -1 },  // Up-Left
-            { row: -1, col: 1 },   // Up-Right
-            { row: 1, col: -1 },   // Down-Left
-            { row: 1, col: 1 }     // Down-Right
+            { row: -1, col: 0 }, // Up
+            { row: 1, col: 0 }, // Down
+            { row: 0, col: -1 }, // Left
+            { row: 0, col: 1 }, // Right
+            { row: -1, col: -1 }, // Up-Left
+            { row: -1, col: 1 }, // Up-Right
+            { row: 1, col: -1 }, // Down-Left
+            { row: 1, col: 1 } // Down-Right
         ];
 
         // Regular king moves (one square in any direction)
-        directions.forEach(dir => {
+        directions.forEach((dir) => {
             const newRow = this.row + dir.row;
             const newCol = this.col + dir.col;
 
@@ -60,7 +60,7 @@ export class King extends Piece {
     canCastleKingside(board, gameState) {
         const rookCol = 7;
         const rook = board[this.row][rookCol];
-        
+
         if (!rook || rook.type !== PIECE_TYPES.ROOK || rook.hasMoved || rook.color !== this.color) {
             return false;
         }
@@ -71,8 +71,10 @@ export class King extends Piece {
         }
 
         // Check if king would pass through check
-        if (gameState.isSquareAttacked(this.row, 5, this.color) || 
-            gameState.isSquareAttacked(this.row, 6, this.color)) {
+        if (
+            gameState.isSquareAttacked(this.row, 5, this.color) ||
+            gameState.isSquareAttacked(this.row, 6, this.color)
+        ) {
             return false;
         }
 
@@ -82,7 +84,7 @@ export class King extends Piece {
     canCastleQueenside(board, gameState) {
         const rookCol = 0;
         const rook = board[this.row][rookCol];
-        
+
         if (!rook || rook.type !== PIECE_TYPES.ROOK || rook.hasMoved || rook.color !== this.color) {
             return false;
         }
@@ -93,12 +95,13 @@ export class King extends Piece {
         }
 
         // Check if king would pass through check
-        if (gameState.isSquareAttacked(this.row, 2, this.color) || 
-            gameState.isSquareAttacked(this.row, 3, this.color)) {
+        if (
+            gameState.isSquareAttacked(this.row, 2, this.color) ||
+            gameState.isSquareAttacked(this.row, 3, this.color)
+        ) {
             return false;
         }
 
         return true;
     }
 }
-

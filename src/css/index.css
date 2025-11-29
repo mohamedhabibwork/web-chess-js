@@ -1,94 +1,93 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  /* Color Theme Variables - Easy to switch colors */
-  --color-board-light: #fef3c7;
-  --color-board-dark: #92400e;
-  
-  /* Highlight Colors - Theme-based */
-  --color-selected: rgba(59, 130, 246, 0.6);
-  --color-valid-move: rgba(34, 197, 94, 0.7);
-  --color-valid-move-bg: rgba(34, 197, 94, 0.3);
-  --color-valid-capture: rgba(220, 38, 38, 0.8);
-  --color-valid-capture-bg: rgba(220, 38, 38, 0.3);
-  --color-last-move: rgba(251, 191, 36, 0.4);
-  
-  /* Background Colors */
-  --color-bg-primary: #f3f4f6;
-  --color-bg-secondary: #ffffff;
-  --color-bg-panel: #f9fafb;
-  
-  /* Text Colors */
-  --color-text-primary: #1f2937;
-  --color-text-secondary: #6b7280;
-  --color-text-accent: #3b82f6;
-  
-  /* Status Colors */
-  --color-status-check: #d97706;
-  --color-status-checkmate: #dc2626;
-  --color-status-stalemate: #2563eb;
-  
-  /* Player Colors */
-  --color-player-white: #ffffff;
-  --color-player-black: #1f2937;
+    /* Color Theme Variables - Easy to switch colors */
+    --color-board-light: #fef3c7;
+    --color-board-dark: #92400e;
+
+    /* Highlight Colors - Theme-based */
+    --color-selected: rgba(59, 130, 246, 0.6);
+    --color-valid-move: rgba(34, 197, 94, 0.7);
+    --color-valid-move-bg: rgba(34, 197, 94, 0.3);
+    --color-valid-capture: rgba(220, 38, 38, 0.8);
+    --color-valid-capture-bg: rgba(220, 38, 38, 0.3);
+    --color-last-move: rgba(251, 191, 36, 0.4);
+
+    /* Background Colors */
+    --color-bg-primary: #f3f4f6;
+    --color-bg-secondary: #ffffff;
+    --color-bg-panel: #f9fafb;
+
+    /* Text Colors */
+    --color-text-primary: #1f2937;
+    --color-text-secondary: #6b7280;
+    --color-text-accent: #3b82f6;
+
+    /* Status Colors */
+    --color-status-check: #d97706;
+    --color-status-checkmate: #dc2626;
+    --color-status-stalemate: #2563eb;
+
+    /* Player Colors */
+    --color-player-white: #ffffff;
+    --color-player-black: #1f2937;
 }
 
 /* Custom Styles */
 .square {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .square:hover {
-  opacity: 0.8;
+    opacity: 0.8;
 }
 
 .piece {
-  font-size: 2.5rem;
-  -webkit-user-select: none;
-  user-select: none;
-  cursor: pointer;
+    font-size: 2.5rem;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
 }
 
 .selected {
-  background-color: var(--color-selected) !important;
+    background-color: var(--color-selected) !important;
 }
 
 .valid-move {
-  position: relative;
-  background-color: var(--color-valid-move-bg) !important;
+    position: relative;
+    background-color: var(--color-valid-move-bg) !important;
 }
 
 .valid-move::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: var(--color-valid-move);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--color-valid-move);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .valid-capture {
-  position: relative;
-  background-color: var(--color-valid-capture-bg) !important;
+    position: relative;
+    background-color: var(--color-valid-capture-bg) !important;
 }
 
 .valid-capture::after {
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-  border: 4px solid var(--color-valid-capture);
-  background-color: transparent;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    border: 4px solid var(--color-valid-capture);
+    background-color: transparent;
 }
 
 .last-move {
-  background-color: var(--color-last-move) !important;
+    background-color: var(--color-last-move) !important;
 }
-

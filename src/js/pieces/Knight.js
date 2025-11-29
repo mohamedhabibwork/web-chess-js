@@ -22,13 +22,17 @@ export class Knight extends Piece {
     getValidMoves(board, gameState) {
         const moves = [];
         const knightMoves = [
-            { row: -2, col: -1 }, { row: -2, col: 1 },
-            { row: -1, col: -2 }, { row: -1, col: 2 },
-            { row: 1, col: -2 },  { row: 1, col: 2 },
-            { row: 2, col: -1 },  { row: 2, col: 1 }
+            { row: -2, col: -1 },
+            { row: -2, col: 1 },
+            { row: -1, col: -2 },
+            { row: -1, col: 2 },
+            { row: 1, col: -2 },
+            { row: 1, col: 2 },
+            { row: 2, col: -1 },
+            { row: 2, col: 1 }
         ];
 
-        knightMoves.forEach(move => {
+        knightMoves.forEach((move) => {
             const newRow = this.row + move.row;
             const newCol = this.col + move.col;
 
@@ -43,4 +47,3 @@ export class Knight extends Piece {
         return moves;
     }
 }
-

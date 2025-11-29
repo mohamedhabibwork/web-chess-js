@@ -26,11 +26,11 @@ export class Pawn extends Piece {
     static getStartingPositions(color) {
         const positions = [];
         const startRow = color === COLORS.WHITE ? 6 : 1;
-        
+
         for (let col = 0; col < 8; col++) {
             positions.push({ row: startRow, col });
         }
-        
+
         return positions;
     }
 
@@ -47,10 +47,12 @@ export class Pawn extends Piece {
 
         // Move forward two squares from starting position
         if (!this.hasMoved && this.row === startRow) {
-            const twoForward = this.row + (direction * 2);
-            if (this.isValidPosition(twoForward, this.col) && 
-                !board[twoForward][this.col] && 
-                !board[oneForward][this.col]) {
+            const twoForward = this.row + direction * 2;
+            if (
+                this.isValidPosition(twoForward, this.col) &&
+                !board[twoForward][this.col] &&
+                !board[oneForward][this.col]
+            ) {
                 moves.push({ row: twoForward, col: this.col });
             }
         }
@@ -59,7 +61,7 @@ export class Pawn extends Piece {
         const captureLeft = { row: this.row + direction, col: this.col - 1 };
         const captureRight = { row: this.row + direction, col: this.col + 1 };
 
-        [captureLeft, captureRight].forEach(capture => {
+        [captureLeft, captureRight].forEach((capture) => {
             if (this.isValidPosition(capture.row, capture.col)) {
                 const piece = board[capture.row][capture.col];
                 if (this.isOpponent(piece)) {
@@ -72,8 +74,10 @@ export class Pawn extends Piece {
         if (gameState.enPassantTarget) {
             const epRow = gameState.enPassantTarget.row;
             const epCol = gameState.enPassantTarget.col;
-            if (epRow === this.row + direction && 
-                (epCol === this.col - 1 || epCol === this.col + 1)) {
+            if (
+                epRow === this.row + direction &&
+                (epCol === this.col - 1 || epCol === this.col + 1)
+            ) {
                 moves.push({ row: epRow, col: epCol, enPassant: true });
             }
         }
@@ -81,4 +85,3 @@ export class Pawn extends Piece {
         return moves;
     }
 }
-

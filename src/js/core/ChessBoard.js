@@ -8,7 +8,9 @@ import { COLORS, PIECE_SYMBOLS, BOARD_SIZE } from '../utils/constants.js';
 
 export class ChessBoard {
     constructor() {
-        this.board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+        this.board = Array(BOARD_SIZE)
+            .fill(null)
+            .map(() => Array(BOARD_SIZE).fill(null));
         this.selectedSquare = null;
         this.validMoves = [];
         this.boardElement = null;
@@ -38,7 +40,9 @@ export class ChessBoard {
      * Clear the board
      */
     clear() {
-        this.board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+        this.board = Array(BOARD_SIZE)
+            .fill(null)
+            .map(() => Array(BOARD_SIZE).fill(null));
     }
 
     /**
@@ -50,70 +54,80 @@ export class ChessBoard {
         // Place pawns using factory method
         const whitePawnPositions = Pawn.getStartingPositions(COLORS.WHITE);
         const blackPawnPositions = Pawn.getStartingPositions(COLORS.BLACK);
-        
-        whitePawnPositions.forEach(pos => {
+
+        whitePawnPositions.forEach((pos) => {
             this.setPieceAt(pos.row, pos.col, Pawn.create(COLORS.WHITE, pos.row, pos.col));
         });
-        
-        blackPawnPositions.forEach(pos => {
+
+        blackPawnPositions.forEach((pos) => {
             this.setPieceAt(pos.row, pos.col, Pawn.create(COLORS.BLACK, pos.row, pos.col));
         });
 
         // Place rooks using factory method
-        [...Rook.getStartingPositions(COLORS.WHITE), ...Rook.getStartingPositions(COLORS.BLACK)]
-            .forEach(pos => {
-                this.setPieceAt(pos.row, pos.col, Rook.create(
-                    pos.row === 7 ? COLORS.WHITE : COLORS.BLACK,
-                    pos.row,
-                    pos.col
-                ));
-            });
+        [
+            ...Rook.getStartingPositions(COLORS.WHITE),
+            ...Rook.getStartingPositions(COLORS.BLACK)
+        ].forEach((pos) => {
+            this.setPieceAt(
+                pos.row,
+                pos.col,
+                Rook.create(pos.row === 7 ? COLORS.WHITE : COLORS.BLACK, pos.row, pos.col)
+            );
+        });
 
         // Place knights using factory method
-        [...Knight.getStartingPositions(COLORS.WHITE), ...Knight.getStartingPositions(COLORS.BLACK)]
-            .forEach(pos => {
-                this.setPieceAt(pos.row, pos.col, Knight.create(
-                    pos.row === 7 ? COLORS.WHITE : COLORS.BLACK,
-                    pos.row,
-                    pos.col
-                ));
-            });
+        [
+            ...Knight.getStartingPositions(COLORS.WHITE),
+            ...Knight.getStartingPositions(COLORS.BLACK)
+        ].forEach((pos) => {
+            this.setPieceAt(
+                pos.row,
+                pos.col,
+                Knight.create(pos.row === 7 ? COLORS.WHITE : COLORS.BLACK, pos.row, pos.col)
+            );
+        });
 
         // Place bishops using factory method
-        [...Bishop.getStartingPositions(COLORS.WHITE), ...Bishop.getStartingPositions(COLORS.BLACK)]
-            .forEach(pos => {
-                this.setPieceAt(pos.row, pos.col, Bishop.create(
-                    pos.row === 7 ? COLORS.WHITE : COLORS.BLACK,
-                    pos.row,
-                    pos.col
-                ));
-            });
+        [
+            ...Bishop.getStartingPositions(COLORS.WHITE),
+            ...Bishop.getStartingPositions(COLORS.BLACK)
+        ].forEach((pos) => {
+            this.setPieceAt(
+                pos.row,
+                pos.col,
+                Bishop.create(pos.row === 7 ? COLORS.WHITE : COLORS.BLACK, pos.row, pos.col)
+            );
+        });
 
         // Place queens using factory method
-        [...Queen.getStartingPositions(COLORS.WHITE), ...Queen.getStartingPositions(COLORS.BLACK)]
-            .forEach(pos => {
-                this.setPieceAt(pos.row, pos.col, Queen.create(
-                    pos.row === 7 ? COLORS.WHITE : COLORS.BLACK,
-                    pos.row,
-                    pos.col
-                ));
-            });
+        [
+            ...Queen.getStartingPositions(COLORS.WHITE),
+            ...Queen.getStartingPositions(COLORS.BLACK)
+        ].forEach((pos) => {
+            this.setPieceAt(
+                pos.row,
+                pos.col,
+                Queen.create(pos.row === 7 ? COLORS.WHITE : COLORS.BLACK, pos.row, pos.col)
+            );
+        });
 
         // Place kings using factory method
-        [...King.getStartingPositions(COLORS.WHITE), ...King.getStartingPositions(COLORS.BLACK)]
-            .forEach(pos => {
-                this.setPieceAt(pos.row, pos.col, King.create(
-                    pos.row === 7 ? COLORS.WHITE : COLORS.BLACK,
-                    pos.row,
-                    pos.col
-                ));
-            });
+        [
+            ...King.getStartingPositions(COLORS.WHITE),
+            ...King.getStartingPositions(COLORS.BLACK)
+        ].forEach((pos) => {
+            this.setPieceAt(
+                pos.row,
+                pos.col,
+                King.create(pos.row === 7 ? COLORS.WHITE : COLORS.BLACK, pos.row, pos.col)
+            );
+        });
     }
 
     /**
      * Get piece at position
-     * @param {number} row 
-     * @param {number} col 
+     * @param {number} row
+     * @param {number} col
      * @returns {Piece|null}
      */
     getPieceAt(row, col) {
@@ -123,9 +137,9 @@ export class ChessBoard {
 
     /**
      * Set piece at position
-     * @param {number} row 
-     * @param {number} col 
-     * @param {Piece|null} piece 
+     * @param {number} row
+     * @param {number} col
+     * @param {Piece|null} piece
      */
     setPieceAt(row, col, piece) {
         if (this.isValidPosition(row, col)) {
@@ -155,8 +169,8 @@ export class ChessBoard {
 
     /**
      * Check if position is valid
-     * @param {number} row 
-     * @param {number} col 
+     * @param {number} row
+     * @param {number} col
      * @returns {boolean}
      */
     isValidPosition(row, col) {
@@ -165,7 +179,7 @@ export class ChessBoard {
 
     /**
      * Render the board
-     * @param {HTMLElement} container 
+     * @param {HTMLElement} container
      */
     render(container) {
         this.boardElement = container;
@@ -175,10 +189,10 @@ export class ChessBoard {
             for (let col = 0; col < BOARD_SIZE; col++) {
                 const square = document.createElement('div');
                 const isLight = (row + col) % 2 === 0;
-                const bgColor = isLight 
-                    ? 'bg-[var(--color-board-light)]' 
+                const bgColor = isLight
+                    ? 'bg-[var(--color-board-light)]'
                     : 'bg-[var(--color-board-dark)]';
-                
+
                 square.className = `square ${bgColor}`;
                 square.dataset.row = row;
                 square.dataset.col = col;
@@ -204,14 +218,14 @@ export class ChessBoard {
     highlightMoves(moves) {
         this.validMoves = moves;
         const squares = this.boardElement.querySelectorAll('.square');
-        
-        squares.forEach(square => {
+
+        squares.forEach((square) => {
             const row = parseInt(square.dataset.row);
             const col = parseInt(square.dataset.col);
-            
-            const isMove = moves.some(m => m.row === row && m.col === col);
+
+            const isMove = moves.some((m) => m.row === row && m.col === col);
             const hasPiece = this.getPieceAt(row, col) !== null;
-            
+
             if (isMove) {
                 square.classList.add(hasPiece ? 'valid-capture' : 'valid-move');
             }
@@ -220,18 +234,18 @@ export class ChessBoard {
 
     /**
      * Highlight selected square
-     * @param {number} row 
-     * @param {number} col 
+     * @param {number} row
+     * @param {number} col
      */
     highlightSelected(row, col) {
         this.clearHighlights();
         this.selectedSquare = { row, col };
-        
+
         const squares = this.boardElement.querySelectorAll('.square');
-        squares.forEach(square => {
+        squares.forEach((square) => {
             const squareRow = parseInt(square.dataset.row);
             const squareCol = parseInt(square.dataset.col);
-            
+
             if (squareRow === row && squareCol === col) {
                 square.classList.add('selected');
             }
@@ -244,9 +258,9 @@ export class ChessBoard {
     clearHighlights() {
         this.selectedSquare = null;
         this.validMoves = [];
-        
+
         const squares = this.boardElement.querySelectorAll('.square');
-        squares.forEach(square => {
+        squares.forEach((square) => {
             square.classList.remove('selected', 'valid-move', 'valid-capture');
         });
     }
@@ -256,7 +270,7 @@ export class ChessBoard {
      * @returns {Array<Array<Piece|null>>}
      */
     getBoardCopy() {
-        return this.board.map(row => [...row]);
+        return this.board.map((row) => [...row]);
     }
 
     /**
@@ -264,24 +278,28 @@ export class ChessBoard {
      * @returns {Array<Array<Piece|null>>}
      */
     serialize() {
-        return this.board.map(row => 
-            row.map(piece => piece ? {
-                type: piece.type,
-                color: piece.color,
-                row: piece.row,
-                col: piece.col,
-                hasMoved: piece.hasMoved
-            } : null)
+        return this.board.map((row) =>
+            row.map((piece) =>
+                piece
+                    ? {
+                          type: piece.type,
+                          color: piece.color,
+                          row: piece.row,
+                          col: piece.col,
+                          hasMoved: piece.hasMoved
+                      }
+                    : null
+            )
         );
     }
 
     /**
      * Restore board state from serialized data
-     * @param {Array<Array<Object|null>>} serializedBoard 
+     * @param {Array<Array<Object|null>>} serializedBoard
      */
     deserialize(serializedBoard) {
         this.clear();
-        
+
         const pieceClasses = {
             pawn: Pawn,
             rook: Rook,
@@ -290,14 +308,18 @@ export class ChessBoard {
             queen: Queen,
             king: King
         };
-        
+
         for (let row = 0; row < BOARD_SIZE; row++) {
             for (let col = 0; col < BOARD_SIZE; col++) {
                 const pieceData = serializedBoard[row][col];
                 if (pieceData) {
                     const PieceClass = pieceClasses[pieceData.type];
                     if (PieceClass) {
-                        const piece = PieceClass.create(pieceData.color, pieceData.row, pieceData.col);
+                        const piece = PieceClass.create(
+                            pieceData.color,
+                            pieceData.row,
+                            pieceData.col
+                        );
                         piece.hasMoved = pieceData.hasMoved;
                         this.setPieceAt(row, col, piece);
                     }
@@ -306,4 +328,3 @@ export class ChessBoard {
         }
     }
 }
-

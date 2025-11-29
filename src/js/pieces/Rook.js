@@ -22,16 +22,16 @@ export class Rook extends Piece {
     getValidMoves(board, gameState) {
         const moves = [];
         const directions = [
-            { row: -1, col: 0 },  // Up
-            { row: 1, col: 0 },   // Down
-            { row: 0, col: -1 },  // Left
-            { row: 0, col: 1 }    // Right
+            { row: -1, col: 0 }, // Up
+            { row: 1, col: 0 }, // Down
+            { row: 0, col: -1 }, // Left
+            { row: 0, col: 1 } // Right
         ];
 
-        directions.forEach(dir => {
+        directions.forEach((dir) => {
             for (let i = 1; i < 8; i++) {
-                const newRow = this.row + (dir.row * i);
-                const newCol = this.col + (dir.col * i);
+                const newRow = this.row + dir.row * i;
+                const newCol = this.col + dir.col * i;
 
                 if (!this.isValidPosition(newRow, newCol)) break;
 
@@ -50,4 +50,3 @@ export class Rook extends Piece {
         return moves;
     }
 }
-

@@ -19,8 +19,8 @@ export class GameController {
 
     /**
      * Handle piece/square click
-     * @param {number} row 
-     * @param {number} col 
+     * @param {number} row
+     * @param {number} col
      * @returns {boolean} Returns true if a move was executed, false otherwise
      */
     async handleSquareClick(row, col) {
@@ -33,7 +33,7 @@ export class GameController {
 
             // Check if clicking on a valid move
             const validMoves = this.getValidMovesForPiece(this.selectedPiece);
-            const isValidMove = validMoves.some(m => m.row === row && m.col === col);
+            const isValidMove = validMoves.some((m) => m.row === row && m.col === col);
 
             if (isValidMove) {
                 // Execute the move
@@ -64,27 +64,27 @@ export class GameController {
 
     /**
      * Select a piece and highlight its valid moves
-     * @param {Piece} piece 
+     * @param {Piece} piece
      */
     selectPiece(piece) {
         this.selectedPiece = piece;
         this.board.highlightSelected(piece.row, piece.col);
-        
+
         const validMoves = this.getValidMovesForPiece(piece);
         this.board.highlightMoves(validMoves);
     }
 
     /**
      * Get valid moves for a piece (filtered to prevent moving into check)
-     * @param {Piece} piece 
+     * @param {Piece} piece
      * @returns {Array<Object>}
      */
     getValidMovesForPiece(piece) {
         const gameState = this.getGameState();
         let moves = piece.getValidMoves(this.board.board, gameState);
-        
+
         // Filter moves that would leave own king in check
-        moves = moves.filter(move => {
+        moves = moves.filter((move) => {
             return !this.wouldMoveLeaveKingInCheck(piece, move);
         });
 
@@ -93,7 +93,7 @@ export class GameController {
 
     /**
      * Check if a move would leave the king in check
-     * @param {Piece} piece 
+     * @param {Piece} piece
      * @param {Object} move {row, col}
      * @returns {boolean}
      */
@@ -104,25 +104,25 @@ export class GameController {
         const originalRow = piece.row;
         const originalCol = piece.col;
         const originalHasMoved = piece.hasMoved;
-        
+
         // Get pieces at positions
         const originalPiece = this.board.getPieceAt(originalRow, originalCol);
         const targetPiece = this.board.getPieceAt(move.row, move.col);
-        
+
         // Validate we have the piece
         if (!originalPiece || originalPiece !== piece) {
             return true;
         }
-        
+
         // Validate move position
         if (!this.board.isValidPosition(move.row, move.col)) {
             return true;
         }
-        
+
         // Make the move temporarily - update board array directly
         this.board.board[move.row][move.col] = piece;
         this.board.board[originalRow][originalCol] = null;
-        
+
         // Temporarily update piece position
         piece.row = move.row;
         piece.col = move.col;
@@ -133,7 +133,7 @@ export class GameController {
         // Restore board state - restore board array directly
         this.board.board[originalRow][originalCol] = originalPiece;
         this.board.board[move.row][move.col] = targetPiece;
-        
+
         // Restore piece position
         piece.row = originalRow;
         piece.col = originalCol;
@@ -152,7 +152,7 @@ export class GameController {
         if (!piece) return;
 
         const capturedPiece = this.board.movePiece(from, to);
-        
+
         // Handle captured piece
         if (capturedPiece) {
             this.capturedPieces[capturedPiece.color].push(capturedPiece);
@@ -172,7 +172,7 @@ export class GameController {
             color: piece.color,
             captured: capturedPiece ? capturedPiece.type : null
         };
-        
+
         this.moveHistory.push(moveData);
 
         // Check for pawn promotion
@@ -193,9 +193,9 @@ export class GameController {
 
     /**
      * Handle special moves (castling, en passant)
-     * @param {Piece} piece 
-     * @param {Object} from 
-     * @param {Object} to 
+     * @param {Piece} piece
+     * @param {Object} from
+     * @param {Object} to
      */
     handleSpecialMoves(piece, from, to) {
         // Castling
@@ -226,9 +226,9 @@ export class GameController {
 
     /**
      * Update en passant target after pawn double move
-     * @param {Piece} piece 
-     * @param {Object} from 
-     * @param {Object} to 
+     * @param {Piece} piece
+     * @param {Object} from
+     * @param {Object} to
      */
     updateEnPassantTarget(piece, from, to) {
         if (piece.type === PIECE_TYPES.PAWN && Math.abs(to.row - from.row) === 2) {
@@ -244,8 +244,8 @@ export class GameController {
 
     /**
      * Handle pawn promotion
-     * @param {Piece} piece 
-     * @param {Object} position 
+     * @param {Piece} piece
+     * @param {Object} position
      */
     async handlePawnPromotion(piece, position) {
         if (piece.type === PIECE_TYPES.PAWN) {
@@ -269,7 +269,7 @@ export class GameController {
 
     /**
      * Check if a color's king is in check
-     * @param {string} color 
+     * @param {string} color
      * @returns {boolean}
      */
     isInCheck(color) {
@@ -281,14 +281,14 @@ export class GameController {
 
     /**
      * Check if a square is attacked by opponent
-     * @param {number} row 
-     * @param {number} col 
-     * @param {string} defendingColor 
+     * @param {number} row
+     * @param {number} col
+     * @param {string} defendingColor
      * @returns {boolean}
      */
     isSquareAttacked(row, col, defendingColor) {
         const opponentColor = defendingColor === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE;
-        
+
         // Create a simplified game state for move calculation (without check validation to avoid recursion)
         const simplifiedGameState = {
             currentPlayer: this.currentPlayer,
@@ -303,7 +303,7 @@ export class GameController {
                 if (piece && piece.color === opponentColor) {
                     // Get raw moves without filtering for check (to avoid recursion)
                     const moves = piece.getValidMoves(this.board.board, simplifiedGameState);
-                    if (moves.some(m => m.row === row && m.col === col)) {
+                    if (moves.some((m) => m.row === row && m.col === col)) {
                         return true;
                     }
                 }
@@ -315,7 +315,7 @@ export class GameController {
 
     /**
      * Find the king of a given color
-     * @param {string} color 
+     * @param {string} color
      * @returns {Piece|null}
      */
     findKing(color) {
@@ -332,7 +332,7 @@ export class GameController {
 
     /**
      * Check if a color is in checkmate
-     * @param {string} color 
+     * @param {string} color
      * @returns {boolean}
      */
     isCheckmate(color) {
@@ -356,7 +356,7 @@ export class GameController {
 
     /**
      * Check if a color is in stalemate
-     * @param {string} color 
+     * @param {string} color
      * @returns {boolean}
      */
     isStalemate(color) {
@@ -413,7 +413,8 @@ export class GameController {
         // Update current player
         const currentPlayerEl = document.getElementById('current-player');
         if (currentPlayerEl) {
-            currentPlayerEl.textContent = this.currentPlayer.charAt(0).toUpperCase() + this.currentPlayer.slice(1);
+            currentPlayerEl.textContent =
+                this.currentPlayer.charAt(0).toUpperCase() + this.currentPlayer.slice(1);
             currentPlayerEl.className = `text-2xl font-bold ${this.currentPlayer === COLORS.WHITE ? 'text-gray-800' : 'text-gray-600'}`;
         }
 
@@ -422,7 +423,7 @@ export class GameController {
         if (gameStatusEl) {
             let statusText = this.gameStatus;
             let statusColor = 'text-gray-800';
-            
+
             if (this.gameStatus === GAME_STATUS.CHECK) {
                 statusText = `Check - ${this.currentPlayer}`;
                 statusColor = 'text-yellow-600';
@@ -434,7 +435,7 @@ export class GameController {
                 statusText = 'Stalemate - Draw!';
                 statusColor = 'text-blue-600';
             }
-            
+
             gameStatusEl.textContent = statusText;
             gameStatusEl.className = `text-lg font-medium ${statusColor}`;
         }
@@ -449,10 +450,10 @@ export class GameController {
     updateCapturedPieces() {
         const capturedWhiteEl = document.getElementById('captured-white');
         const capturedBlackEl = document.getElementById('captured-black');
-        
+
         if (capturedWhiteEl) {
             capturedWhiteEl.innerHTML = '';
-            this.capturedPieces[COLORS.WHITE].forEach(piece => {
+            this.capturedPieces[COLORS.WHITE].forEach((piece) => {
                 const symbol = this.getPieceSymbol(piece);
                 const span = document.createElement('span');
                 span.className = 'text-xl';
@@ -463,7 +464,7 @@ export class GameController {
 
         if (capturedBlackEl) {
             capturedBlackEl.innerHTML = '';
-            this.capturedPieces[COLORS.BLACK].forEach(piece => {
+            this.capturedPieces[COLORS.BLACK].forEach((piece) => {
                 const symbol = this.getPieceSymbol(piece);
                 const span = document.createElement('span');
                 span.className = 'text-xl';
@@ -475,7 +476,7 @@ export class GameController {
 
     /**
      * Get piece symbol for display
-     * @param {Piece} piece 
+     * @param {Piece} piece
      * @returns {string}
      */
     getPieceSymbol(piece) {
@@ -496,7 +497,7 @@ export class GameController {
 
         this.isNavigatingHistory = true;
         const historyEntry = this.historyManager.goBack();
-        
+
         if (historyEntry) {
             this.restoreBoardState(historyEntry.boardState);
             this.updateGameStateFromHistory();
@@ -516,7 +517,7 @@ export class GameController {
 
         this.isNavigatingHistory = true;
         const historyEntry = this.historyManager.goForward();
-        
+
         if (historyEntry) {
             this.restoreBoardState(historyEntry.boardState);
             this.updateGameStateFromHistory();
@@ -528,12 +529,12 @@ export class GameController {
 
     /**
      * Go to specific move in history
-     * @param {number} index 
+     * @param {number} index
      */
     goToMove(index) {
         this.isNavigatingHistory = true;
         const historyEntry = this.historyManager.goToMove(index);
-        
+
         if (historyEntry) {
             this.restoreBoardState(historyEntry.boardState);
             this.updateGameStateFromHistory();
@@ -552,7 +553,7 @@ export class GameController {
 
         this.isNavigatingHistory = true;
         const historyEntry = this.historyManager.goToCurrent();
-        
+
         if (historyEntry) {
             this.restoreBoardState(historyEntry.boardState);
             this.updateGameStateFromHistory();
@@ -595,7 +596,7 @@ export class GameController {
 
     /**
      * Restore board state from serialized data
-     * @param {Array<Array<Object|null>>} boardState 
+     * @param {Array<Array<Object|null>>} boardState
      */
     restoreBoardState(boardState) {
         this.board.deserialize(boardState);
@@ -609,7 +610,8 @@ export class GameController {
         const currentEntry = this.historyManager.getCurrentMove();
         if (currentEntry) {
             // Next player after the move
-            this.currentPlayer = currentEntry.move.color === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE;
+            this.currentPlayer =
+                currentEntry.move.color === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE;
         } else {
             // At start position
             this.currentPlayer = COLORS.WHITE;
@@ -619,4 +621,3 @@ export class GameController {
         this.updateGameStatus();
     }
 }
-

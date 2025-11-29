@@ -45,8 +45,8 @@ export class Piece {
 
     /**
      * Set the position of the piece
-     * @param {number} row 
-     * @param {number} col 
+     * @param {number} row
+     * @param {number} col
      */
     setPosition(row, col) {
         this.row = row;
@@ -56,8 +56,8 @@ export class Piece {
 
     /**
      * Check if a position is within board bounds
-     * @param {number} row 
-     * @param {number} col 
+     * @param {number} row
+     * @param {number} col
      * @returns {boolean}
      */
     isValidPosition(row, col) {
@@ -66,7 +66,7 @@ export class Piece {
 
     /**
      * Check if a piece at position is the same color
-     * @param {Piece|null} piece 
+     * @param {Piece|null} piece
      * @returns {boolean}
      */
     isSameColor(piece) {
@@ -75,7 +75,7 @@ export class Piece {
 
     /**
      * Check if a piece at position is opponent's piece
-     * @param {Piece|null} piece 
+     * @param {Piece|null} piece
      * @returns {boolean}
      */
     isOpponent(piece) {
@@ -84,8 +84,8 @@ export class Piece {
 
     /**
      * Abstract method to get valid moves - must be implemented by subclasses
-     * @param {Array<Array<Piece|null>>} board 
-     * @param {Object} gameState 
+     * @param {Array<Array<Piece|null>>} board
+     * @param {Object} gameState
      * @returns {Array<Object>} Array of {row, col} objects
      */
     getValidMoves(board, gameState) {
@@ -94,9 +94,9 @@ export class Piece {
 
     /**
      * Filter moves that would leave own king in check
-     * @param {Array<Object>} moves 
-     * @param {Array<Array<Piece|null>>} board 
-     * @param {Object} gameState 
+     * @param {Array<Object>} moves
+     * @param {Array<Array<Piece|null>>} board
+     * @param {Object} gameState
      * @returns {Array<Object>}
      */
     filterMovesInCheck(moves, board, gameState) {
@@ -104,4 +104,3 @@ export class Piece {
         return moves;
     }
 }
-
